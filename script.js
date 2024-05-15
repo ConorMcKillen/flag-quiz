@@ -1,4 +1,4 @@
-const originalCountries = {
+let countries = {
   Europe: [
     "Ireland",
     "Serbia",
@@ -203,7 +203,6 @@ const originalCountries = {
     "Tuvalu",
   ],
 };
-let countries = { ...originalCountries };
 
 const randomIndex = Math.floor(Math.random() * countries.length);
 const guessText = document.querySelector(".guess-text");
@@ -266,10 +265,6 @@ function updateCounter() {
   let num = score.innerHTML;
   num++;
   score.innerHTML = num;
-}
-
-function resetCountries() {
-  countries = { ...originalCountries }; // Reset to original data (shallow copy)
 }
 
 function classToggle() {
@@ -359,6 +354,8 @@ oceaniaButton.addEventListener("click", function () {
 
   oceaniaSelected = true;
   countryName = getRandomCountry("Oceania");
+  console.log(countries.Oceania);
+  console.log(guessedCountries);
 
   fetchFlagByCountryName(countryName)
     .then((flagUrl) => {
@@ -375,6 +372,212 @@ oceaniaButton.addEventListener("click", function () {
 homeScreenButton.addEventListener("click", handleHomeScreenButtonClick);
 
 function handleHomeScreenButtonClick() {
+  countries = {
+    Europe: [
+      "Ireland",
+      "Serbia",
+      "Albania",
+      "Spain",
+      "Italy",
+      "Ukraine",
+      "Belarus",
+      "Germany",
+      "Russia",
+      "France",
+      "Poland",
+      "Romania",
+      "Netherlands",
+      "Belgium",
+      "Sweden",
+      "Czechia",
+      "Greece",
+      "Portugal",
+      "Hungary",
+      "Austria",
+      "Switzerland",
+      "Bulgaria",
+      "Slovakia",
+      "Finland",
+      "Croatia",
+      "Moldova",
+      "Bosnia and Herzegovina",
+      "Lithuania",
+      "Slovenia",
+      "North Macedonia",
+      "Latvia",
+      "Estonia",
+      "Luxembourg",
+      "Montenegro",
+      "Malta",
+      "Iceland",
+      "Andorra",
+      "Liechtenstein",
+      "Monaco",
+      "San Marino",
+    ],
+    Africa: [
+      "Nigeria",
+      "Ethiopia",
+      "Egypt",
+      "Congo",
+      "Tanzania",
+      "South Africa",
+      "Kenya",
+      "Uganda",
+      "Sudan",
+      "Algeria",
+      "Morocco",
+      "Angola",
+      "Ghana",
+      "Mozambique",
+      "Madagascar",
+      "Ivory Coast",
+      "Cameroon",
+      "Niger",
+      "Mali",
+      "Burkina Faso",
+      "Malawi",
+      "Zambia",
+      "Chad",
+      "Somalia",
+      "Senegal",
+      "Zimbabwe",
+      "Guinea",
+      "Rwanda",
+      "Benin",
+      "Burundi",
+      "Tunisia",
+      "South Sudan",
+      "Togo",
+      "Sierra Leone",
+      "Libya",
+      "Republic of the Congo",
+      "Central African Republic",
+      "Liberia",
+      "Mauritania",
+      "Eritrea",
+      "Gambia",
+      "Botswana",
+      "Namibia",
+      "Gabon",
+      "Lesotho",
+      "Guinea-Bissau",
+      "Equatorial Guinea",
+      "Mauritius",
+      "Eswatini",
+      "Djibouti",
+      "Comoros",
+      "Cape Verde",
+      "Sao Tome and Principe",
+      "Seychelles",
+    ],
+    Asia: [
+      "China",
+      "India",
+      "Kazakhstan",
+      "Saudi Arabia",
+      "Iran",
+      "Mongolia",
+      "Indonesia",
+      "Pakistan",
+      "Turkey",
+      "Myanmar",
+      "Afghanistan",
+      "Yemen",
+      "Thailand",
+      "Turkmenistan",
+      "Uzbekistan",
+      "Iraq",
+      "Japan",
+      "Vietnam",
+      "Malaysia",
+      "Oman",
+      "Philippines",
+      "Laos",
+      "Kyrgyzstan",
+      "Syria",
+      "Cambodia",
+      "Bangladesh",
+      "Nepal",
+      "Tajikistan",
+      "North Korea",
+      "South Korea",
+      "Jordan",
+      "United Arab Emirates",
+      "Azerbaijan",
+      "Georgia",
+      "Sri Lanka",
+      "Bhutan",
+      "Taiwan",
+      "Armenia",
+      "Israel",
+      "Kuwait",
+      "East Timor",
+      "Qatar",
+      "Lebanon",
+      "Cyprus",
+      "Palestine",
+      "Brunei",
+      "Hong Kong",
+      "Bahrain",
+      "Singapore",
+      "Maldives",
+      "Macao",
+    ],
+    Americas: [
+      "United States",
+      "Brazil",
+      "Mexico",
+      "Colombia",
+      "Argentina",
+      "Canada",
+      "Peru",
+      "Venezuela",
+      "Chile",
+      "Ecuador",
+      "Guatemala",
+      "Bolivia",
+      "Haiti",
+      "Cuba",
+      "Dominican Republic",
+      "Honduras",
+      "Paraguay",
+      "El Salvador",
+      "Nicaragua",
+      "Costa Rica",
+      "Panama",
+      "Uruguay",
+      "Jamaica",
+      "Trinidad and Tobago",
+      "Guyana",
+      "Suriname",
+      "Belize",
+      "Bahamas",
+      "Barbados",
+      "Saint Lucia",
+      "Grenada",
+      "Saint Vincent and the Grenadines",
+      "Antigua and Barbuda",
+      "Dominica",
+      "Saint Kitts and Nevis",
+    ],
+    Oceania: [
+      "Australia",
+      "Papua New Guinea",
+      "New Zealand",
+      "Fiji",
+      "Solomon Islands",
+      "Micronesia",
+      "Vanuatu",
+      "Samoa",
+      "Kiribati",
+      "Tonga",
+      "Palau",
+      "Nauru",
+      "Tuvalu",
+    ],
+  };
+
   flagImage.classList.add("hidden");
   europeButton.classList.remove("hidden");
   africaButton.classList.remove("hidden");
@@ -389,14 +592,13 @@ function handleHomeScreenButtonClick() {
 
   score.innerHTML = 0;
   guessText.value = "";
-  guessedCountries.length = 0;
+  guessedCountries = [];
+
   europeSelected = false;
   africaSelected = false;
   asiaSelected = false;
   americasSelected = false;
   oceaniaSelected = false;
-
-  resetCountries();
 }
 
 // Add click event listener to nextButton
@@ -413,7 +615,7 @@ guessText.addEventListener("keydown", (event) => {
 function handleNextButtonClick() {
   const guessedCountryName = guessText.value.trim().toLowerCase();
   const correctCountryName = countryName.toLowerCase();
-  console.log(countryName);
+  console.log(correctCountryName);
 
   if (guessedCountryName === correctCountryName) {
     updateCounter(); // Update counter for correct guess
@@ -469,6 +671,7 @@ function handleNextButtonClick() {
           countries.Oceania.splice(index, 1);
         }
       });
+      console.log(countries.Oceania);
       countryName = getRandomCountry("Oceania");
     }
 
@@ -491,7 +694,7 @@ function handleNextButtonClick() {
     } else {
       guessText.classList.add("hidden");
       nextButton.classList.add("hidden");
-      guessedCountries.length = 0;
+      guessedCountries = [];
     }
 
     guessText.value = ""; // Clear input field after correct guess
