@@ -10,6 +10,10 @@
       href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
     />
+    <script
+      src="https://kit.fontawesome.com/34288f9b43.js"
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -22,11 +26,31 @@
         <div class="game-section">
           <h2 class="game-heading">Guess the flag!</h2>
           <div class="flag-container">
-            <button class="btn" id="europe-button">Europe</button>
-            <button class="btn" id="africa-button">Africa</button>
-            <button class="btn" id="asia-button">Asia</button>
-            <button class="btn" id="americas-button">Americas</button>
-            <button class="btn" id="oceania-button">Oceania</button>
+            <button class="btn raise" id="europe-button">
+              <div class="inside-btn-continent">
+                Europe <i class="fa-solid fa-earth-europe"></i>
+              </div>
+            </button>
+            <button class="btn" id="africa-button">
+              <div class="inside-btn-continent">
+                Africa <i class="fa-solid fa-earth-africa"></i>
+              </div>
+            </button>
+            <button class="btn" id="asia-button">
+              <div class="inside-btn-continent">
+                Asia <i class="fa-solid fa-earth-asia"></i>
+              </div>
+            </button>
+            <button class="btn" id="americas-button">
+              <div class="inside-btn-continent">
+                Americas <i class="fa-solid fa-earth-americas"></i>
+              </div>
+            </button>
+            <button class="btn" id="oceania-button">
+              <div class="inside-btn-continent">
+                Oceania <i class="fa-solid fa-earth-oceania"></i>
+              </div>
+            </button>
             <img src="" alt="Flag" class="flag-image hidden" />
           </div>
           <div class="options-container">
@@ -34,11 +58,16 @@
           </div>
 
           <button class="next-btn hidden">GUESS</button>
+          <button class="skip-btn hidden">SKIP?</button>
           <div class="score-section">
             <p class="score hidden">SCORE:</p>
             <span class="score-value hidden">0</span>
+            <p class="score-high-text hidden">HIGHEST SCORE:</p>
+            <span class="score-highest hidden">0</span>
           </div>
-          <button class="homescreen-btn hidden">Return to Home Screen</button>
+          <button class="homescreen-btn hidden">
+            <i class="fa-solid fa-chevron-left"></i> Return to Home Screen
+          </button>
         </div>
       </section>
     </main>

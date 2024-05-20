@@ -98,7 +98,7 @@ let countries = {
     "Seychelles",
   ],
   Asia: [
-    "China",
+    "the People's Republic of China",
     "India",
     "Kazakhstan",
     "Saudi Arabia",
@@ -209,6 +209,8 @@ const guessText = document.querySelector(".guess-text");
 const nextButton = document.querySelector(".next-btn");
 const scoreName = document.querySelector(".score");
 const score = document.querySelector(".score-value");
+const highScore = document.querySelector(".score-highest");
+const highScoreText = document.querySelector(".score-high-text");
 const europeButton = document.getElementById("europe-button");
 const africaButton = document.getElementById("africa-button");
 const asiaButton = document.getElementById("asia-button");
@@ -216,6 +218,7 @@ const americasButton = document.getElementById("americas-button");
 const oceaniaButton = document.getElementById("oceania-button");
 const flagImage = document.querySelector(".flag-image");
 const homeScreenButton = document.querySelector(".homescreen-btn");
+const skipButton = document.querySelector(".skip-btn");
 
 let europeSelected = false;
 let africaSelected = false;
@@ -232,9 +235,25 @@ async function fetchFlagByCountryName(countryName) {
       `https://restcountries.com/v3.1/name/${countryName}`
     );
     const data = await response.json();
+
     if (response.ok && data.length > 0) {
-      const flagUrl = data[0].flags.svg;
-      return flagUrl;
+      let countryData;
+
+      // Handle special cases
+      if (countryName.toLowerCase() === "netherlands") {
+        // Find the Netherlands in Europe
+        countryData = data.find((country) => country.region === "Europe");
+      } else {
+        // Default to the first result
+        countryData = data[0];
+      }
+
+      if (countryData) {
+        const flagUrl = countryData.flags.svg;
+        return flagUrl;
+      } else {
+        throw new Error("Country not found in the specified region");
+      }
     } else {
       throw new Error("Country not found");
     }
@@ -277,8 +296,38 @@ function classToggle() {
   guessText.classList.remove("hidden");
   scoreName.classList.remove("hidden");
   score.classList.remove("hidden");
+  highScore.classList.remove("hidden");
+  highScoreText.classList.remove("hidden");
   nextButton.classList.remove("hidden");
   homeScreenButton.classList.remove("hidden");
+  skipButton.classList.remove("hidden");
+}
+
+function classToggleHomeScreenButton() {
+  flagImage.classList.add("hidden");
+  europeButton.classList.remove("hidden");
+  africaButton.classList.remove("hidden");
+  asiaButton.classList.remove("hidden");
+  americasButton.classList.remove("hidden");
+  oceaniaButton.classList.remove("hidden");
+  guessText.classList.add("hidden");
+  scoreName.classList.add("hidden");
+  highScore.classList.add("hidden");
+  highScoreText.classList.add("hidden");
+  score.classList.add("hidden");
+  nextButton.classList.add("hidden");
+  homeScreenButton.classList.add("hidden");
+  skipButton.classList.add("hidden");
+
+  score.innerHTML = 0;
+  guessText.value = "";
+  guessedCountries = [];
+
+  europeSelected = false;
+  africaSelected = false;
+  asiaSelected = false;
+  americasSelected = false;
+  oceaniaSelected = false;
 }
 
 europeButton.addEventListener("click", function () {
@@ -578,27 +627,7 @@ function handleHomeScreenButtonClick() {
     ],
   };
 
-  flagImage.classList.add("hidden");
-  europeButton.classList.remove("hidden");
-  africaButton.classList.remove("hidden");
-  asiaButton.classList.remove("hidden");
-  americasButton.classList.remove("hidden");
-  oceaniaButton.classList.remove("hidden");
-  guessText.classList.add("hidden");
-  scoreName.classList.add("hidden");
-  score.classList.add("hidden");
-  nextButton.classList.add("hidden");
-  homeScreenButton.classList.add("hidden");
-
-  score.innerHTML = 0;
-  guessText.value = "";
-  guessedCountries = [];
-
-  europeSelected = false;
-  africaSelected = false;
-  asiaSelected = false;
-  americasSelected = false;
-  oceaniaSelected = false;
+  classToggleHomeScreenButton();
 }
 
 // Add click event listener to nextButton
@@ -671,7 +700,6 @@ function handleNextButtonClick() {
           countries.Oceania.splice(index, 1);
         }
       });
-      console.log(countries.Oceania);
       countryName = getRandomCountry("Oceania");
     }
 
@@ -694,9 +722,101 @@ function handleNextButtonClick() {
     } else {
       guessText.classList.add("hidden");
       nextButton.classList.add("hidden");
+      getHighestScore();
       guessedCountries = [];
     }
 
     guessText.value = ""; // Clear input field after correct guess
   }
+}
+
+function handleSkipButtonClick() {
+  guessedCountries.push(countryName); // Add the current country to guessedCountries
+
+  // Remove the guessed country from the continent array
+  if (europeSelected) {
+    const index = countries.Europe.indexOf(countryName);
+    if (index !== -1) {
+      countries.Europe.splice(index, 1);
+    }
+    // Generate a new country
+    if (countries.Europe.length > 0) {
+      countryName = getRandomCountry("Europe");
+    }
+  }
+
+  if (africaSelected) {
+    const index = countries.Africa.indexOf(countryName);
+    if (index !== -1) {
+      countries.Africa.splice(index, 1);
+    }
+    if (countries.Africa.length > 0) {
+      countryName = getRandomCountry("Africa");
+    }
+  }
+
+  if (asiaSelected) {
+    const index = countries.Asia.indexOf(countryName);
+    if (index !== -1) {
+      countries.Asia.splice(index, 1);
+    }
+    if (countries.Asia.length > 0) {
+      countryName = getRandomCountry("Asia");
+    }
+  }
+
+  if (americasSelected) {
+    const index = countries.Americas.indexOf(countryName);
+    if (index !== -1) {
+      countries.Americas.splice(index, 1);
+    }
+    if (countries.Americas.length > 0) {
+      countryName = getRandomCountry("Americas");
+    }
+  }
+
+  if (oceaniaSelected) {
+    const index = countries.Oceania.indexOf(countryName);
+    if (index !== -1) {
+      countries.Oceania.splice(index, 1);
+    }
+    if (countries.Oceania.length > 0) {
+      countryName = getRandomCountry("Oceania");
+    }
+  }
+
+  console.log(guessedCountries);
+
+  if (
+    (oceaniaSelected && guessedCountries.length < 13) ||
+    (europeSelected && guessedCountries.length < 40) ||
+    (africaSelected && guessedCountries.length < 54) ||
+    (asiaSelected && guessedCountries.length < 51) ||
+    (americasSelected && guessedCountries.length < 35)
+  ) {
+    fetchFlagByCountryName(countryName)
+      .then((flagUrl) => {
+        if (flagUrl) {
+          updateFlagImage(flagUrl); // Update flag image
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching flag:", err);
+      });
+  } else {
+    guessText.classList.add("hidden");
+    nextButton.classList.add("hidden");
+    skipButton.classList.add("hidden");
+    getHighestScore();
+    guessedCountries = [];
+  }
+}
+
+skipButton.addEventListener("click", handleSkipButtonClick);
+
+function getHighestScore() {
+  const currentScore = localStorage.setItem(score.innerHTML, 10);
+  const storedHighScore = localStorage.getItem("highScore");
+  const highScoreValue = storedHighScore ? parseInt(storedHighScore, 10) : 0;
+  console.log(highScoreValue);
 }

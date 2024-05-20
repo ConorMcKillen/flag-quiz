@@ -1,3 +1,21 @@
+:root {
+  --europe-color: #003399;
+  --europe-color-dark: #002277; /* Slightly darker shade for Europe button */
+
+  --africa-color: #006239;
+  --africa-color-dark: #004c2e; /* Slightly darker shade for Africa button */
+
+  --asia-color: #ee1c25;
+  --asia-color-dark: #bb161c; /* Slightly darker shade for Asia button */
+
+  --americas-color: #0a3161;
+  --americas-color-dark: #072341; /* Slightly darker shade for Americas button */
+
+  --oceania-color: #ffcd00;
+  --oceania-color-dark: #d1ae00; /* Slightly darker shade for Oceania button */
+  --shadow-color: rgba(0, 0, 0, 0.2);
+}
+
 * {
   box-sizing: border-box;
   font-family: "Kanit", sans-serif;
@@ -61,7 +79,7 @@ footer {
   justify-content: start;
   align-items: center;
   background-color: #e9ecef;
-  min-height: 660px;
+  min-height: auto;
   width: 360px;
   min-width: 250px;
   border-radius: 2rem;
@@ -72,6 +90,57 @@ footer {
   box-shadow: 0px 0px 110px 36px rgba(45, 255, 196, 0.9);
 }
 
+#europe-button {
+  background-color: var(--europe-color);
+  color: #ffcc00;
+}
+
+#europe-button:hover,
+#europe-button:active {
+  background-color: var(--europe-color-dark);
+}
+
+#africa-button {
+  background-color: var(--africa-color);
+  color: #fabc0c;
+}
+
+#africa-button:hover,
+#africa-button:active {
+  background-color: var(--africa-color-dark);
+}
+
+#asia-button {
+  background-color: var(--asia-color);
+  color: #ffff00;
+}
+
+#asia-button:hover,
+#asia-button:active {
+  background-color: var(--asia-color-dark);
+}
+
+#americas-button {
+  background-color: var(--americas-color);
+  color: #ffff;
+  border-color: #b31942;
+}
+
+#americas-button:hover,
+#americas-button:active {
+  background-color: var(--americas-color-dark);
+}
+
+#oceania-button {
+  background-color: var(--oceania-color);
+  color: #00843d;
+}
+
+#oceania-button:hover,
+#oceania-button:active {
+  background-color: var(--oceania-color-dark);
+}
+
 .game-heading {
   margin-top: 15px;
 }
@@ -79,7 +148,7 @@ footer {
 .flag-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 50px;
   justify-content: center;
   align-items: center;
   padding: 20px;
@@ -117,14 +186,66 @@ footer {
   font-size: 5rem;
 }
 
+.btn {
+  transition: transform 330ms ease-in-out, background-color 200ms ease,
+    box-shadow 300ms ease;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.btn:active {
+  transform: scale(0.95); /* Scale down a bit on click */
+}
+
 .btn,
 .next-btn {
+  cursor: pointer;
+  border-radius: 9px;
   font-size: 1.8rem;
-  width: 10rem;
+  width: 18rem;
   padding: 1rem;
 }
 
+.next-btn {
+  background-image: linear-gradient(
+    to right,
+    #ff2d68 0%,
+    #f45c43 51%,
+    #ff2d68 100%
+  );
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 20px #eee;
+}
+
+.next-btn:hover {
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+}
+
+.inside-btn-continent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .homescreen-btn {
+  cursor: pointer;
   margin: 30px;
   font-size: 1.1rem;
+  padding: 1rem;
+  border-radius: 9px;
+}
+
+.skip-btn {
+  cursor: pointer;
+  margin: 30px;
+  font-size: 1.1rem;
+  padding: 1rem;
+  border-radius: 9px;
 }
