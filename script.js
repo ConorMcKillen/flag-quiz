@@ -14,7 +14,6 @@ let countries = {
     "Romania",
     "Netherlands",
     "Belgium",
-    "Sweden",
     "Czechia",
     "Greece",
     "Portugal",
@@ -77,7 +76,6 @@ let countries = {
     "Togo",
     "Sierra Leone",
     "Libya",
-    "Republic of the Congo",
     "Central African Republic",
     "Liberia",
     "Mauritania",
@@ -94,11 +92,10 @@ let countries = {
     "Djibouti",
     "Comoros",
     "Cape Verde",
-    "Sao Tome and Principe",
     "Seychelles",
   ],
   Asia: [
-    "the People's Republic of China",
+    "People's Republic of China",
     "India",
     "Kazakhstan",
     "Saudi Arabia",
@@ -148,7 +145,6 @@ let countries = {
     "Bahrain",
     "Singapore",
     "Maldives",
-    "Macao",
   ],
   Americas: [
     "United States",
@@ -234,18 +230,38 @@ async function fetchFlagByCountryName(countryName) {
     const response = await fetch(
       `https://restcountries.com/v3.1/name/${countryName}`
     );
+    console.log("Response status:", response.status);
     const data = await response.json();
+    console.log("Data received:", data);
 
     if (response.ok && data.length > 0) {
       let countryData;
 
+      // Convert to lowercase for case-insensitive comparison
+      const lowerCaseCountryName = countryName.toLowerCase();
+
       // Handle special cases
-      if (countryName.toLowerCase() === "netherlands") {
+      if (lowerCaseCountryName === "netherlands") {
         // Find the Netherlands in Europe
         countryData = data.find((country) => country.region === "Europe");
+      } else if (lowerCaseCountryName === "guinea") {
+        countryData = data.find((country) => country.region === "Africa");
+      } else if (lowerCaseCountryName === "east timor") {
+        countryData = data.find(
+          (country) => country.name.common.toLowerCase() === "timor-leste"
+        );
+      } else if (lowerCaseCountryName === "congo") {
+        countryData = data.find(
+          (country) =>
+            country.name.common.toLowerCase() === "republic of the congo"
+        );
       } else {
-        // Default to the first result
-        countryData = data[0];
+        // Default to finding the exact match for the country name
+        countryData = data.find(
+          (country) =>
+            country.name.common.toLowerCase() === lowerCaseCountryName ||
+            country.name.official.toLowerCase() === lowerCaseCountryName
+        );
       }
 
       if (countryData) {
@@ -258,11 +274,10 @@ async function fetchFlagByCountryName(countryName) {
       throw new Error("Country not found");
     }
   } catch (error) {
-    console.error("Error fetching flag:", error);
+    console.error("Error fetching flag for:", countryName, error);
     return null;
   }
 }
-
 // Function to update flag image
 function updateFlagImage(flagUrl) {
   const flagImage = document.querySelector(".flag-image");
@@ -281,9 +296,72 @@ function getRandomCountry(continent) {
 }
 
 function updateCounter() {
-  let num = score.innerHTML;
+  let num = parseInt(score.innerHTML);
   num++;
   score.innerHTML = num;
+}
+
+// Function to get and set the highest score
+function getHighestScore() {
+  let currentHighScore;
+  let highScoreKey;
+
+  if (europeSelected) {
+    highScoreKey = "highScoreEurope";
+  } else if (africaSelected) {
+    highScoreKey = "highScoreAfrica";
+  } else if (asiaSelected) {
+    highScoreKey = "highScoreAsia";
+  } else if (americasSelected) {
+    highScoreKey = "highScoreAmericas";
+  } else if (oceaniaSelected) {
+    highScoreKey = "highScoreOceania";
+  }
+
+  // Get the current high score from local storage
+  currentHighScore = localStorage.getItem(highScoreKey);
+
+  // If there's no high score yet or the new score is higher than the current high score
+  if (
+    currentHighScore === null ||
+    parseInt(score.innerHTML) > parseInt(currentHighScore)
+  ) {
+    // Set the new high score in local storage
+    localStorage.setItem(highScoreKey, parseInt(score.innerHTML));
+    // Update the highScore element
+    document.querySelector(".score-highest").textContent = parseInt(
+      score.innerHTML
+    );
+  } else {
+    // If the new score is not a high score, just display the current high score
+    document.querySelector(".score-highest").textContent =
+      parseInt(currentHighScore);
+  }
+}
+
+// Function to initialize the high score display
+function initializeHighScore() {
+  // Get the current high score from local storage
+  let currentHighScore;
+  let highScoreKey;
+
+  if (europeSelected) {
+    highScoreKey = "highScoreEurope";
+  } else if (africaSelected) {
+    highScoreKey = "highScoreAfrica";
+  } else if (asiaSelected) {
+    highScoreKey = "highScoreAsia";
+  } else if (americasSelected) {
+    highScoreKey = "highScoreAmericas";
+  } else if (oceaniaSelected) {
+    highScoreKey = "highScoreOceania";
+  }
+
+  currentHighScore = localStorage.getItem(highScoreKey);
+  currentHighScore = currentHighScore ? parseInt(currentHighScore, 10) : 0;
+
+  // Update the high score element
+  document.querySelector(".score-highest").textContent = currentHighScore;
 }
 
 function classToggle() {
@@ -321,6 +399,7 @@ function classToggleHomeScreenButton() {
 
   score.innerHTML = 0;
   guessText.value = "";
+
   guessedCountries = [];
 
   europeSelected = false;
@@ -330,10 +409,13 @@ function classToggleHomeScreenButton() {
   oceaniaSelected = false;
 }
 
+window.addEventListener("load", initializeHighScore);
+
 europeButton.addEventListener("click", function () {
   classToggle();
 
   europeSelected = true;
+  initializeHighScore();
   countryName = getRandomCountry("Europe");
 
   fetchFlagByCountryName(countryName)
@@ -351,6 +433,7 @@ africaButton.addEventListener("click", function () {
   classToggle();
 
   africaSelected = true;
+  initializeHighScore();
   countryName = getRandomCountry("Africa");
 
   fetchFlagByCountryName(countryName)
@@ -368,6 +451,7 @@ asiaButton.addEventListener("click", function () {
   classToggle();
 
   asiaSelected = true;
+  initializeHighScore();
   countryName = getRandomCountry("Asia");
 
   fetchFlagByCountryName(countryName)
@@ -385,6 +469,7 @@ americasButton.addEventListener("click", function () {
   classToggle();
 
   americasSelected = true;
+  initializeHighScore();
   countryName = getRandomCountry("Americas");
 
   fetchFlagByCountryName(countryName)
@@ -402,9 +487,8 @@ oceaniaButton.addEventListener("click", function () {
   classToggle();
 
   oceaniaSelected = true;
+  initializeHighScore();
   countryName = getRandomCountry("Oceania");
-  console.log(countries.Oceania);
-  console.log(guessedCountries);
 
   fetchFlagByCountryName(countryName)
     .then((flagUrl) => {
@@ -500,7 +584,6 @@ function handleHomeScreenButtonClick() {
       "Togo",
       "Sierra Leone",
       "Libya",
-      "Republic of the Congo",
       "Central African Republic",
       "Liberia",
       "Mauritania",
@@ -517,7 +600,6 @@ function handleHomeScreenButtonClick() {
       "Djibouti",
       "Comoros",
       "Cape Verde",
-      "Sao Tome and Principe",
       "Seychelles",
     ],
     Asia: [
@@ -571,7 +653,6 @@ function handleHomeScreenButtonClick() {
       "Bahrain",
       "Singapore",
       "Maldives",
-      "Macao",
     ],
     Americas: [
       "United States",
@@ -628,6 +709,7 @@ function handleHomeScreenButtonClick() {
   };
 
   classToggleHomeScreenButton();
+  highScore.innerHTML = 0;
 }
 
 // Add click event listener to nextButton
@@ -644,13 +726,11 @@ guessText.addEventListener("keydown", (event) => {
 function handleNextButtonClick() {
   const guessedCountryName = guessText.value.trim().toLowerCase();
   const correctCountryName = countryName.toLowerCase();
-  console.log(correctCountryName);
 
   if (guessedCountryName === correctCountryName) {
     updateCounter(); // Update counter for correct guess
 
     guessedCountries.push(countryName);
-    console.log(guessedCountries);
 
     // Generate new country name and fetch flag
     if (europeSelected === true) {
@@ -706,8 +786,8 @@ function handleNextButtonClick() {
     if (
       (oceaniaSelected === true && guessedCountries.length < 13) ||
       (europeSelected === true && guessedCountries.length < 40) ||
-      (africaSelected === true && guessedCountries.length < 54) ||
-      (asiaSelected === true && guessedCountries.length < 51) ||
+      (africaSelected === true && guessedCountries.length < 52) ||
+      (asiaSelected === true && guessedCountries.length < 50) ||
       (americasSelected === true && guessedCountries.length < 35)
     ) {
       fetchFlagByCountryName(countryName)
@@ -720,10 +800,11 @@ function handleNextButtonClick() {
           console.error("Error fetching flag:", err);
         });
     } else {
-      guessText.classList.add("hidden");
-      nextButton.classList.add("hidden");
       getHighestScore();
       guessedCountries = [];
+      guessText.classList.add("hidden");
+      nextButton.classList.add("hidden");
+      skipButton.classList.add("hidden");
     }
 
     guessText.value = ""; // Clear input field after correct guess
@@ -785,13 +866,11 @@ function handleSkipButtonClick() {
     }
   }
 
-  console.log(guessedCountries);
-
   if (
     (oceaniaSelected && guessedCountries.length < 13) ||
     (europeSelected && guessedCountries.length < 40) ||
-    (africaSelected && guessedCountries.length < 54) ||
-    (asiaSelected && guessedCountries.length < 51) ||
+    (africaSelected && guessedCountries.length < 52) ||
+    (asiaSelected && guessedCountries.length < 50) ||
     (americasSelected && guessedCountries.length < 35)
   ) {
     fetchFlagByCountryName(countryName)
@@ -804,19 +883,14 @@ function handleSkipButtonClick() {
         console.error("Error fetching flag:", err);
       });
   } else {
+    getHighestScore();
+    guessedCountries = [];
     guessText.classList.add("hidden");
     nextButton.classList.add("hidden");
     skipButton.classList.add("hidden");
-    getHighestScore();
-    guessedCountries = [];
   }
+
+  guessText.value = "";
 }
 
 skipButton.addEventListener("click", handleSkipButtonClick);
-
-function getHighestScore() {
-  const currentScore = localStorage.setItem(score.innerHTML, 10);
-  const storedHighScore = localStorage.getItem("highScore");
-  const highScoreValue = storedHighScore ? parseInt(storedHighScore, 10) : 0;
-  console.log(highScoreValue);
-}
