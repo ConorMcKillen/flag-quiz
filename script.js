@@ -40,6 +40,7 @@ let originalCountries = {
     "Monaco",
     "San Marino",
     "Sweden",
+    "United Kingdom",
   ],
   Africa: [
     "Nigeria",
@@ -218,6 +219,7 @@ const oceaniaButton = document.getElementById("oceania-button");
 const flagImage = document.querySelector(".flag-image");
 const homeScreenButton = document.querySelector(".homescreen-btn");
 const skipButton = document.querySelector(".skip-btn");
+const gameOverText = document.querySelector(".game-over-text");
 
 let europeSelected = false;
 let africaSelected = false;
@@ -402,6 +404,7 @@ function classToggleHomeScreenButton() {
   nextButton.classList.add("hidden");
   homeScreenButton.classList.add("hidden");
   skipButton.classList.add("hidden");
+  gameOverText.classList.add("hidden");
   highScoreText.style.fontSize = "1rem";
   highScore.style.fontSize = "2rem";
   homeScreenButton.classList.remove("flex-ender");
@@ -425,10 +428,11 @@ function gameEnd() {
   guessText.classList.add("hidden");
   nextButton.classList.add("hidden");
   skipButton.classList.add("hidden");
-  document.querySelector(".game-section").style.gap = "30px";
+  document.querySelector(".game-section").style.gap = "10px";
   highScoreText.style.fontSize = "2rem";
   highScore.style.fontSize = "3rem";
   homeScreenButton.classList.add("flex-ender");
+  gameOverText.classList.remove("hidden");
 }
 
 window.addEventListener("load", initializeHighScore);

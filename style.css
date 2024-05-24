@@ -83,7 +83,7 @@ footer {
   justify-content: start;
   align-items: center;
   background-color: #e9ecef;
-  height: 770px;
+  height: 790px;
   width: 360px;
   min-width: 250px;
   border-radius: 2rem;
@@ -341,4 +341,23 @@ footer {
   font-size: 1.1rem;
   padding: 1rem;
   border-radius: 9px;
+}
+
+@keyframes moveUpDown {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-90px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.game-over-text {
+  font-size: 2.7rem;
+  font-weight: bolder;
+  text-align: center;
+  color: #f40009;
+  animation: moveUpDown 1.7s ease-in-out infinite; /* Adjust the animation duration and timing function as needed */
 }
